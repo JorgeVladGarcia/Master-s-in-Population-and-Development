@@ -32,7 +32,7 @@ ggplot(data = censo_Bol, aes(x=Departamento, y=tasa_crec_per, fill=Departamento)
   scale_color_economist()+
   ggtitle("Tasa de Crecimiento Poblacional 2001-2012") +
   theme(legend.position = "none")   # Eliminates legend to the right
-ggsave("C:\\Users\\Vladimir\\Documents\\R\\Maestría\\crec_pob.png")  
+ggsave("C:\\Users\\Vladimir\\Documents\\R\\MaestrÃ­a\\crec_pob.png")  
 
 # Graph bar WSJ style
 ggplot(data = censo_Bol, aes(x=Departamento, y=tasa_crec_per, fill=Departamento)) +
