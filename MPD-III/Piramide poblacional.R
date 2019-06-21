@@ -5,8 +5,8 @@ library(XML)
 library(extrafont)
 # Getting data ready
 
-censo2001<- read_excel("C:\\Users\\Vladimir\\Documents\\R\\Maestría\\Data\\reporte.xls")
-# censo2012<- read_excel("C:\\Users\\Vladimir\\Documents\\R\\Maestría\\Data\\reporte(1).xls")
+censo2001<- read_excel("C:\\Users\\Vladimir\\Documents\\R\\MaestrÃ­a\\Data\\reporte.xls")
+# censo2012<- read_excel("C:\\Users\\Vladimir\\Documents\\R\\MaestrÃ­a\\Data\\reporte(1).xls")
 
 #----- CLEANING DATA
 ## to eliminate unnecessary rows and columns
@@ -54,7 +54,7 @@ CENSO2001<- rbind(censo2001_homb, censo2001_mujer)
 # take all the rows coded as males and flip their percent to negative
 CENSO2001$PERCENT[CENSO2001$GROUP=="Males"] <- -CENSO2001$PERCENT[CENSO2001$GROUP=="Males"] 
 # change values in agegroup column
-CENSO2001$AGEGRP[censo2001$AGEGRP=="De 5 a 9 años"]<- "De 05 a 9 años"
+CENSO2001$AGEGRP[censo2001$AGEGRP=="De 5 a 9 aÃ±os"]<- "De 05 a 9 aÃ±os"
 
 #----- CREATING PLOT
 attach(CENSO2001)
@@ -63,10 +63,20 @@ ggplot(CENSO2001, aes(x=AGEGRP, y=PERCENT, fill=GROUP)) +
   geom_bar(stat = "identity", width = .85) +   # draw the bars
   scale_y_continuous(breaks = seq(-10,10,length.out = 5),labels = c('10%','5%', '0','5%','10%')) +
   coord_flip() +  # Flip axes
-  labs(title="Cambios en la estructura poblacional de Bolivia desde 2001") +
+  labs(x="Edad", y="Porcentaje de la poblaciÃ³n",
+       title="Cambios en la estructura poblacional de Bolivia desde 2001",
+       caption="Jorge Vladimir Garcia | twitter: @vladiroufakis | github: VladGarcia",
+       fill = "Group") +
   theme(plot.title = element_text(hjust = .5),
         axis.ticks = element_blank()) +   # Centre plot title
   scale_fill_manual(values=c("#899DA4", "#C93312")) +
   #theme_tufte(base_size = 12, base_family="Avenir") +
-  facet_grid(. ~ YEAR)
+  facet_grid(. ~ YEAR)+
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(size = rel(0.8), face = "bold"),
+        plot.subtitle = element_text(size = rel(0.8)),
+        plot.caption = element_text(size = rel(0.8)),
+        axis.text.y = element_text(size = rel(0.9)),
+        axis.text.x = element_text(size = rel(0.9)))
 
