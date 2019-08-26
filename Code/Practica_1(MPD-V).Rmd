@@ -1,0 +1,114 @@
+---
+title: "Practica No. 1 - Dem II"
+author: "Vladimir Garcia"
+date: "August 24, 2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+# Library
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = TRUE)
+        ## URBANO
+Edades<- c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49")
+No_hijos<- c(359, 357, 340, 333, 254, 221, 165)
+Muj_fertil<- c(125, 540, 856, 1122, 1005, 977, 797)
+
+Municipio_A_urb<- data.frame(Edades, Muj_fertil, No_hijos)
+Municipio_A_urb$B<- sum(Municipio_A_urb$No_hijos)
+Municipio_A_urb$Pt<- 10015
+Municipio_A_urb$MEF<- sum(Municipio_A_urb$Muj_fertil)
+
+          ## RURAL
+No_hijos<- c(775, 769, 744, 571, 542, 367, 336)
+Muj_fertil<- c(652, 1872, 2840, 2931, 3544, 2524, 2515)
+
+Municipio_A_rur<- data.frame(Edades, Muj_fertil, No_hijos)
+Municipio_A_rur$B<- sum(Municipio_A_rur$No_hijos)
+Municipio_A_rur$Pt<-20500
+Municipio_A_rur$MEF<- sum(Municipio_A_rur$Muj_fertil)
+```
+
+## OBJETIVO
+Conocer uno de los factores dinámicos del cambio demográfico: FECUNDIDAD. Mujeres en Edad Fértil y número de hijos nacidos vivos. Lograr destrezas en el cálculo de las tasas de fecundidad por edad, analizar e interpretar los resulados.
+
+## PROPUESTA
+Con la información contenida en los Cuadros "A" y "B" sobre el número de hijos nacidos vivos de mujeres en edad fértil y una población urbana de 10015 habitantes y  una rural de 20500 habitantes (Año 2018).
+
+**Se pide calcular, anbalizar e einterpretar los resultados referidos para cada área de residencia de los siguientes indicadores:
+
+### 1) Tasa bruta de natalidad.
+```{r}
+(b_urbana<- Municipio_A_urb$B / Municipio_A_urb$Pt * 1000)
+```
+```{r}
+(b_rural<- Municipio_A_rur$B / Municipio_A_rur$Pt * 1000)
+```
+### 2) Tasa de Fecunidad General.
+```{r}
+(Municipio_A_urb$TFG<- Municipio_A_urb$B / Municipio_A_urb$MEF * 1000)
+```
+```{r}
+(Municipio_A_rur$TFG<- Municipio_A_rur$B / Municipio_A_rur$MEF * 1000)
+```
+
+### 3) Tasa de fecundidad por edad de la madre a dos decimales.
+```{r}
+Municipio_A_urb$F_x<- Municipio_A_urb$No_hijos / Municipio_A_urb$Muj_fertil * 1000
+
+(F_x_urb<- select(Municipio_A_urb, c(Edades, Muj_fertil, No_hijos, F_x)))
+```
+```{r}
+Municipio_A_rur$F_x<- Municipio_A_rur$No_hijos / Municipio_A_rur$Muj_fertil * 1000
+
+(F_x_rur<- select(Municipio_A_rur, c(Edades, Muj_fertil, No_hijos, F_x)))
+```
+
+### d) Graficar las tasas de fecunidad por edad.
+```{r}
+# getting data
+F_x_urb$Loc<- "Urbana"
+F_x_rur$Loc<- "Rural"
+Data_graph<- rbind(F_x_rur, F_x_urb)
+
+attach(Data_graph)
+CUADRO<- ggplot(data = Data_graph) +
+  geom_point(mapping = aes(x=Edades, y= F_x, color = Loc, group=Loc))+
+  geom_line(mapping = aes(x=Edades, y= F_x, color = Loc, group=Loc)) +
+  labs(x="EDADES",
+       y="TASA F(x)",
+       title = "GRÁFICO No. 1",
+       subtitle = "BOLIVIA.TASA DE FECUNIDAD POR LOCALIZACIÓN SEGÚN GRUPOS DE EDAD. URBANO-RURAL.",
+       color = "Ref:",
+       caption = "")+
+      theme(plot.title = element_text(hjust = .5),
+        axis.ticks = element_blank())+
+    theme_minimal()
+CUADRO
+```
+
+### e) Determinar el tipo de cúspide de la fecunidad.
+El comportamiento de la fecunidad según edad en el Municipio A indica que se trata de un municipio con fecunidad de cúspide temprana. 
+
+### f) Calcular la Tasa Global de Fecunidad.
+```{r URBANO}
+Municipio_A_urb$Sum_f_x<- sum(Municipio_A_urb$F_x)/1000
+(Municipio_A_urb$TFG<- 5*Municipio_A_urb$Sum_f_x)
+```
+```{r RURAL}
+Municipio_A_rur$Sum_f_x<- sum(Municipio_A_rur$F_x)/1000
+(Municipio_A_rur$TFG<- 5*Municipio_A_rur$Sum_f_x)
+```
+
+### g) La Tasa Bruta de Reproducción.
+```{r}
+Municipio_A_urb$K<- 100/205
+(Municipio_A_urb$TBR<- 5*Municipio_A_urb$K*Municipio_A_urb$Sum_f_x)
+```
+```{r}
+Municipio_A_rur$K<- 100/205
+(Municipio_A_rur$TBR<- 5*Municipio_A_rur$K*Municipio_A_rur$Sum_f_x)
+```
+
+### h) Comparar ambos resultados. 
